@@ -7,3 +7,4 @@ export const useFavourites = (): FavouritesContextValue => {
   if (!ctx) throw new Error('useFavourites must be used within FavouritesProvider');
   return ctx;
 };
+
