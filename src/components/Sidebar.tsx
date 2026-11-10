@@ -10,7 +10,6 @@ const Sidebar: React.FC = () => {
   return (
     <aside className="sidebar">
       <h2 className="sidebar__title">
-        <span className="sidebar__title-icon">⭐</span>
         Favourites
       </h2>
       {favourites.length === 0 ? (
