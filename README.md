@@ -1,81 +1,119 @@
 # Star Wars Characters App
 
-A React-based web application that fetches and displays characters from the Star Wars universe using the Star Wars API (SWAPI).
+A React application that lets you explore characters from the Star Wars universe using the [SWAPI](https://swapi.dev/) public API.
 
 ## Features
 
-- **Character Grid**: Displays Star Wars characters in a grid layout with their name and birth year.
-- **Detailed View**: Shows detailed information about a selected character, including:
-  - Name
-  - Height
-  - Mass
-  - Hair color
-  - Skin color
-  - Eye color
-  - Birth year
-  - Gender
-  - Home Planet (with link to planet details)
-- **Planet Details**: Displays detailed information about a character's home planet.
-- **Responsive Design**: Optimized for both desktop and mobile devices.
+- **Homepage** — Paginated grid of all Star Wars characters (10 per page)
+- **Character Detail** — Full profile including height, mass, gender, birth year, home planet, film appearances, and starships
+- **Search** — Live search that triggers automatically as you type (debounced, 400 ms), with results shown in real time
+- **Search History** — Autocomplete dropdown populated from your past searches, persisted across page reloads
+- **Favourites Sidebar** — Star any character to save them; the list persists via `localStorage` and each entry links directly to that character's detail page
+- **Responsive Design** — Sidebar hidden on mobile; grid adapts to screen width
+
+## Tech Stack
+
+| Tool                                          | Purpose                                      |
+| --------------------------------------------- | -------------------------------------------- |
+| [React 19](https://react.dev/)                | UI library (functional components + hooks)   |
+| [TypeScript](https://www.typescriptlang.org/) | Type safety                                  |
+| [React Router v7](https://reactrouter.com/)   | Client-side routing                          |
+| [Axios](https://axios-http.com/)              | HTTP client for SWAPI requests               |
+| [Vite](https://vitejs.dev/)                   | Build tool and dev server                    |
+| CSS                                           | Component-scoped stylesheets (no UI library) |
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v14 or higher recommended)
-- [npm](https://www.npmjs.com/)
+- [Node.js](https://nodejs.org/) v18 or higher
+- npm
 
-## Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd star-wars-react-app
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-## Usage
-
-Start the development server:
+## Getting Started
 
 ```bash
+# 1. Clone the repo
+git clone https://github.com/CodewithSegNet/Star-Wars-React-App.git
+cd star-wars-react-app
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the dev server
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser to view the app.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Available Scripts
+
+| Script            | Description                           |
+| ----------------- | ------------------------------------- |
+| `npm run dev`     | Start the development server with HMR |
+| `npm run build`   | Type-check and build for production   |
+| `npm run preview` | Preview the production build locally  |
+| `npm run lint`    | Run ESLint across the whole project   |
 
 ## Project Structure
 
 ```
 src/
-├── api/              # API configuration and utility functions
-│   └── swapi.ts
-├── components/       # React components
-│   ├── CharacterCard.tsx
-│   ├── CharacterDetail.tsx
-│   ├── CharacterList.tsx
-│   ├── PlanetDetail.tsx
-│   └── App.tsx
-├── styles/           # Global styles
-│   ├── App.css
-│   └── index.css
-├── types/            # TypeScript type definitions
-│   └── index.ts
-├── App.tsx           # Main application component
-├── main.tsx          # Entry point
-└── vite.config.ts    # Vite configuration
+├── api/
+│   └── swapi.ts               # Axios client — getCharacters, searchCharacters, getFilm, getPlanet
+├── assets/
+│   └── star-wars-seeklogo.svg # Logo (imported as an ES module)
+├── components/
+│   ├── CharacterCard.tsx      # Card shown in list/search grids with inline ★ favourite toggle
+│   ├── CharacterDetail.tsx    # Full character profile page
+│   ├── CharacterList.tsx      # Homepage — paginated character grid
+│   ├── Header.tsx             # Fixed top bar with logo and live search input
+│   ├── SearchResults.tsx      # Search results page (auto-triggered on input)
+│   └── Sidebar.tsx            # Persistent favourites list
+├── context/
+│   ├── FavouritesContext.ts   # createContext + types (plain .ts, no JSX)
+│   └── FavouritesContext.tsx  # FavouritesProvider component
+├── hooks/
+│   └── useFavourites.ts       # useFavourites() — consumes FavouritesContext
+├── styles/
+│   ├── index.css              # Global reset, CSS variables, spinner
+│   ├── App.css                # App shell layout
+│   ├── Header.css
+│   ├── Sidebar.css
+│   ├── CharacterCard.css
+│   ├── CharacterList.css
+│   ├── CharacterDetail.css
+│   └── SearchResults.css
+├── types/
+│   └── index.ts               # Shared TypeScript types (Character, Film, Planet, Favourite…)
+├── App.tsx                    # Root component — BrowserRouter + route definitions
+└── main.tsx                   # Entry point
 ```
 
-## Technologies Used
+## Pages & Routes
 
-- **React**: UI library for building the user interface
-- **TypeScript**: For type safety
-- **Vite**: Build tool and development server
-- **Axios**: HTTP client for API requests
+| Route            | Component         | Description                         |
+| ---------------- | ----------------- | ----------------------------------- |
+| `/`              | `CharacterList`   | Paginated character grid            |
+| `/character/:id` | `CharacterDetail` | Character detail + favourite toggle |
+| `/search?q=…`    | `SearchResults`   | Live search results                 |
+
+## API
+
+All data is fetched from [https://swapi.dev/api](https://swapi.dev/api).
+
+| Function                  | Endpoint                                        |
+| ------------------------- | ----------------------------------------------- |
+| `getCharacters(page)`     | `GET /people/?page=n`                           |
+| `getCharacterById(id)`    | `GET /people/:id/`                              |
+| `searchCharacters(query)` | `GET /people/?search=query`                     |
+| `getPlanet(url)`          | Absolute URL from character's `homeworld` field |
+| `getFilm(url)`            | Absolute URL from character's `films` array     |
+
+## LocalStorage Keys
+
+| Key                 | Contents                                |
+| ------------------- | --------------------------------------- |
+| `sw_favourites`     | Array of `{ id, name, url }` objects    |
+| `sw_search_history` | Array of recent search strings (max 10) |
 
 ## License
 
-This project is licensed under the MIT License.
+MIT
