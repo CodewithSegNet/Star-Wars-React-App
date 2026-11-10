@@ -9,33 +9,40 @@ const SearchResults: React.FC = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
 
+  const [fetchedQuery, setFetchedQuery] = useState('');
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // loading when a non-empty query hasn't resolved yet
+  const loading = query.trim() !== '' && query !== fetchedQuery;
 
   useEffect(() => {
     if (!query.trim()) {
-      setCharacters([]);
+      // No setState here — loading is derived, idle state is handled by render
       return;
     }
-    setLoading(true);
-    setError(null);
+    let cancelled = false;
     searchCharacters(query)
-      .then((data) => setCharacters(data.results))
-      .catch(() => setError('Search failed. Please try again.'))
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (cancelled) return;
+        setCharacters(data.results);
+        setError(null);
+        setFetchedQuery(query);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setError('Search failed. Please try again.');
+        setFetchedQuery(query);
+      });
+    return () => { cancelled = true; };
   }, [query]);
 
   return (
     <div className="search-results">
       <h1 className="search-results__title">
-        {query ? (
-          <>
-            Results for <em>&ldquo;{query}&rdquo;</em>
-          </>
-        ) : (
-          'Search Characters'
-        )}
+        {query
+          ? <>Results for <em>&ldquo;{query}&rdquo;</em></>
+          : 'Search Characters'}
       </h1>
 
       {loading && (
@@ -45,12 +52,12 @@ const SearchResults: React.FC = () => {
         </div>
       )}
 
-      {error && <p className="search-results__error">{error}</p>}
+      {!loading && error && (
+        <p className="search-results__error">{error}</p>
+      )}
 
       {!loading && !error && characters.length === 0 && query && (
-        <p className="search-results__empty">
-          No characters found matching &ldquo;{query}&rdquo;.
-        </p>
+        <p className="search-results__empty">No characters found matching &ldquo;{query}&rdquo;.</p>
       )}
 
       {!loading && !error && characters.length > 0 && (

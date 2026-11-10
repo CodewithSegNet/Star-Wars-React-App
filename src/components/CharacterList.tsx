@@ -5,22 +5,32 @@ import CharacterCard from './CharacterCard';
 import '../styles/CharacterList.css';
 
 const CharacterList: React.FC = () => {
-  const [characters, setCharacters] = useState<Character[]>([]);
   const [page, setPage] = useState(1);
+  // Track the page for which we last received a response (success or error).
+  // loading is true when page !== fetchedPage (a fetch is in-flight).
+  const [fetchedPage, setFetchedPage] = useState(0);
+  const [characters, setCharacters] = useState<Character[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const loading = page !== fetchedPage;
+
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    let cancelled = false;
     getCharacters(page)
       .then((data) => {
+        if (cancelled) return;
         setCharacters(data.results);
         setTotalPages(Math.ceil(data.count / 10));
+        setError(null);
+        setFetchedPage(page);
       })
-      .catch(() => setError('Failed to load characters. Please try again.'))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (cancelled) return;
+        setError('Failed to load characters. Please try again.');
+        setFetchedPage(page);
+      });
+    return () => { cancelled = true; };
   }, [page]);
 
   return (
@@ -34,7 +44,9 @@ const CharacterList: React.FC = () => {
         </div>
       )}
 
-      {error && <p className="character-list__error">{error}</p>}
+      {!loading && error && (
+        <p className="character-list__error">{error}</p>
+      )}
 
       {!loading && !error && (
         <>
@@ -43,23 +55,12 @@ const CharacterList: React.FC = () => {
               <CharacterCard key={char.url} character={char} />
             ))}
           </div>
-
           <div className="character-list__pagination">
-            <button
-              className="pagination-btn"
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
+            <button className="pagination-btn" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
               ← Prev
             </button>
-            <span className="pagination-info">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              className="pagination-btn"
-              disabled={page === totalPages}
-              onClick={() => setPage((p) => p + 1)}
-            >
+            <span className="pagination-info">Page {page} of {totalPages}</span>
+            <button className="pagination-btn" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
               Next →
             </button>
           </div>

@@ -10,54 +10,57 @@ const CharacterDetail: React.FC = () => {
   const navigate = useNavigate();
   const { isFavourite, addFavourite, removeFavourite } = useFavourites();
 
+  // Track the id for which we last received a full response.
+  // loading = true when id !== fetchedId (fetch in-flight).
+  const [fetchedId, setFetchedId] = useState<string | null>(null);
   const [character, setCharacter] = useState<Character | null>(null);
   const [planet, setPlanet] = useState<Planet | null>(null);
   const [films, setFilms] = useState<Film[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const loading = id !== fetchedId;
 
   useEffect(() => {
     if (!id) return;
-    setLoading(true);
-    setError(null);
-    setFilms([]);
-    setPlanet(null);
-
+    let cancelled = false;
     getCharacterById(id)
       .then(async (char) => {
-        setCharacter(char);
-        // Fetch planet and films in parallel
+        if (cancelled) return;
         const [planetData, filmsData] = await Promise.all([
           getPlanet(char.homeworld),
           Promise.all(char.films.map(getFilm)),
         ]);
+        if (cancelled) return;
+        setCharacter(char);
         setPlanet(planetData);
         setFilms(filmsData.sort((a, b) => a.episode_id - b.episode_id));
+        setError(null);
+        setFetchedId(id);
       })
-      .catch(() => setError('Failed to load character details.'))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (cancelled) return;
+        setError('Failed to load character details.');
+        setFetchedId(id);
+      });
+    return () => { cancelled = true; };
   }, [id]);
 
-  if (loading)
+  if (loading) {
     return (
       <div className="character-detail__loading">
         <div className="spinner" />
         <p>Loading character...</p>
       </div>
     );
+  }
 
   if (error) return <p className="character-detail__error">{error}</p>;
   if (!character || !id) return null;
 
   const fav = isFavourite(id);
-
-  const toggleFav = () => {
-    if (fav) {
-      removeFavourite(id);
-    } else {
-      addFavourite({ id, name: character.name, url: character.url });
-    }
-  };
+  const toggleFav = () => fav
+    ? removeFavourite(id)
+    : addFavourite({ id, name: character.name, url: character.url });
 
   const detailRows: [string, string][] = [
     ['Height', character.height !== 'unknown' ? `${character.height} cm` : 'Unknown'],
@@ -123,13 +126,9 @@ const CharacterDetail: React.FC = () => {
             <ul className="character-detail__films">
               {films.map((film) => (
                 <li key={film.url} className="character-detail__film-item">
-                  <span className="character-detail__film-episode">
-                    Episode {film.episode_id}
-                  </span>
+                  <span className="character-detail__film-episode">Episode {film.episode_id}</span>
                   <span className="character-detail__film-title">{film.title}</span>
-                  <span className="character-detail__film-year">
-                    {film.release_date.split('-')[0]}
-                  </span>
+                  <span className="character-detail__film-year">{film.release_date.split('-')[0]}</span>
                 </li>
               ))}
             </ul>
@@ -141,9 +140,7 @@ const CharacterDetail: React.FC = () => {
             <h2 className="character-detail__section-title">Starships</h2>
             <ul className="character-detail__tags">
               {character.starships.map((url) => (
-                <li key={url} className="character-detail__tag">
-                  #{extractId(url)}
-                </li>
+                <li key={url} className="character-detail__tag">#{extractId(url)}</li>
               ))}
             </ul>
           </section>
@@ -154,4 +151,3 @@ const CharacterDetail: React.FC = () => {
 };
 
 export default CharacterDetail;
-
