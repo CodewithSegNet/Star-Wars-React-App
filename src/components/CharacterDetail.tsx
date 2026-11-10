@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCharacterById, getPlanet, getFilm, extractId } from '../api/swapi';
-import { useFavourites } from '../context/FavouritesContext';
+import { useFavourites } from '../hooks/useFavourites';
 import type { Character, Planet, Film } from '../types';
 import '../styles/CharacterDetail.css';
 
@@ -154,3 +154,4 @@ const CharacterDetail: React.FC = () => {
 };
 
 export default CharacterDetail;
+

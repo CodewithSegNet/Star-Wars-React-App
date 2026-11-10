@@ -1,14 +1,14 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import type { Favourite } from '../types';
 
-interface FavouritesContextValue {
+export interface FavouritesContextValue {
   favourites: Favourite[];
   addFavourite: (fav: Favourite) => void;
   removeFavourite: (id: string) => void;
   isFavourite: (id: string) => boolean;
 }
 
-const FavouritesContext = createContext<FavouritesContextValue | null>(null);
+export const FavouritesContext = createContext<FavouritesContextValue | null>(null);
 
 const STORAGE_KEY = 'sw_favourites';
 
@@ -46,8 +46,4 @@ export const FavouritesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   );
 };
 
-export const useFavourites = (): FavouritesContextValue => {
-  const ctx = useContext(FavouritesContext);
-  if (!ctx) throw new Error('useFavourites must be used within FavouritesProvider');
-  return ctx;
-};
+

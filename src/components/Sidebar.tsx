@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useFavourites } from '../context/FavouritesContext';
+import { useFavourites } from '../hooks/useFavourites';
 import '../styles/Sidebar.css';
 
 const Sidebar: React.FC = () => {
@@ -38,3 +38,4 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+

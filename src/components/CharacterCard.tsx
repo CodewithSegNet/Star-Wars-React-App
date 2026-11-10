@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { extractId } from '../api/swapi';
-import { useFavourites } from '../context/FavouritesContext';
+import { useFavourites } from '../hooks/useFavourites';
 import type { Character } from '../types';
 import '../styles/CharacterCard.css';
 
@@ -52,3 +52,4 @@ const CharacterCard: React.FC<Props> = ({ character }) => {
 };
 
 export default CharacterCard;
+
