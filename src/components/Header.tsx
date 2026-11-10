@@ -44,6 +44,9 @@ const Header: React.FC = () => {
       debounceRef.current = setTimeout(() => {
         navigate(`/search?q=${encodeURIComponent(val.trim())}`);
       }, 400);
+    } else {
+      // Input was cleared — go back to homepage
+      navigate('/');
     }
   };
 
@@ -85,7 +88,7 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <a href="/" className="header__logo">
-        <span className="header__logo-text"><img src={logo} alt="Star Wars logo" className="header__logo-img" />Star Wars</span>
+        <span className="header__logo-text"><img src={logo} alt="Star Wars logo" className="header__logo-img" /></span>
       </a>
       <div className="header__search-wrapper">
         <div className="header__search-icon">🔍</div>
@@ -107,6 +110,7 @@ const Header: React.FC = () => {
             onClick={() => {
               setQuery('');
               setShowDropdown(false);
+              navigate('/');
               inputRef.current?.focus();
             }}
             aria-label="Clear search"
