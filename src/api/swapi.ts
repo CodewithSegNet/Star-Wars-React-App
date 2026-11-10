@@ -27,3 +27,4 @@ export const extractId = (url: string): string => {
   const parts = url.replace(/\/$/, '').split('/');
   return parts[parts.length - 1];
 };
+

@@ -1,7 +1,6 @@
 import { useContext } from 'react';
-// eslint-disable-next-line react-refresh/only-export-components
-import { FavouritesContext } from '../context/FavouritesContext.tsx';
-import type { FavouritesContextValue } from '../context/FavouritesContext.tsx';
+import { FavouritesContext } from '../context/FavouritesContext';
+import type { FavouritesContextValue } from '../context/FavouritesContext';
 
 export const useFavourites = (): FavouritesContextValue => {
   const ctx = useContext(FavouritesContext);

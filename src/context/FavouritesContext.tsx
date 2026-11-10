@@ -1,17 +1,6 @@
-// eslint-disable-next-line react-refresh/only-export-components -- context + provider must share this file
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FavouritesContext, STORAGE_KEY } from './FavouritesContext';
 import type { Favourite } from '../types';
-
-export interface FavouritesContextValue {
-  favourites: Favourite[];
-  addFavourite: (fav: Favourite) => void;
-  removeFavourite: (id: string) => void;
-  isFavourite: (id: string) => boolean;
-}
-
-export const FavouritesContext = createContext<FavouritesContextValue | null>(null);
-
-const STORAGE_KEY = 'sw_favourites';
 
 export const FavouritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [favourites, setFavourites] = useState<Favourite[]>(() => {
@@ -46,5 +35,3 @@ export const FavouritesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     </FavouritesContext.Provider>
   );
 };
-
-

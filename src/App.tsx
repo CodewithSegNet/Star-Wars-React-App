@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { FavouritesProvider } from './context/FavouritesContext';
+import { FavouritesProvider } from './context/FavouritesContext.tsx';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import CharacterList from './components/CharacterList';
