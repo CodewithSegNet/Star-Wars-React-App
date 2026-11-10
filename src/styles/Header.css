@@ -29,6 +29,17 @@
   color: var(--color-primary);
   letter-spacing: 0.5px;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header__logo-img {
+  height: 28px;
+  width: auto;
+  display: block;
+  /* SVG is dark by default — invert it to show on dark backgrounds */
+  filter: brightness(0) invert(1);
 }
 
 .header__search-wrapper {
@@ -115,3 +126,4 @@
   font-size: 0.8rem;
   opacity: 0.5;
 }
+

@@ -1,3 +1,4 @@
+// eslint-disable-next-line react-refresh/only-export-components -- context + provider must share this file
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import type { Favourite } from '../types';
 

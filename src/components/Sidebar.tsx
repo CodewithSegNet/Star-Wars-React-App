@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useFavourites } from '../hooks/useFavourites';
+import type { Favourite } from '../types';
 import '../styles/Sidebar.css';
 
 const Sidebar: React.FC = () => {
@@ -16,7 +17,7 @@ const Sidebar: React.FC = () => {
         <p className="sidebar__empty">No favourites yet. Click the star on a character to add them!</p>
       ) : (
         <ul className="sidebar__list">
-          {favourites.map((fav) => (
+          {favourites.map((fav: Favourite) => (
             <li key={fav.id} className="sidebar__item">
               <Link to={`/character/${fav.id}`} className="sidebar__link">
                 {fav.name}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/star-wars-seeklogo.svg';
 import '../styles/Header.css';
 
 const HISTORY_KEY = 'sw_search_history';
@@ -84,7 +85,7 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <a href="/" className="header__logo">
-        <span className="header__logo-text">⭐ Star Wars</span>
+        <span className="header__logo-text"><img src={logo} alt="Star Wars logo" className="header__logo-img" />Star Wars</span>
       </a>
       <div className="header__search-wrapper">
         <div className="header__search-icon">🔍</div>
@@ -134,3 +135,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+
