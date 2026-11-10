@@ -1,0 +1,35 @@
+/* Search Results */
+.search-results__title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 28px;
+}
+
+.search-results__title em {
+  font-style: normal;
+  color: var(--color-text);
+}
+
+.search-results__loading {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--color-text-muted);
+}
+
+.search-results__error {
+  color: var(--color-danger);
+  padding: 16px 0;
+}
+
+.search-results__empty {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  padding: 24px 0;
+}
+
+.search-results__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
